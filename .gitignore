@@ -1,0 +1,21 @@
+venv/
+
+config_local.py
+
+*.csv
+*.log
+*.json
+
+# Byte-compiled / optimized / DLL files
+__pycache__/
+
+# Installer logs
+pip-log.txt
+pip-delete-this-directory.txt
+
+# IPython
+profile_default/
+ipython_config.py
+
+*.swp
+.DS_Store
