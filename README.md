@@ -75,4 +75,4 @@ pip install -r requirements-dev.txt
 
 Run commands inside the virtual environment.
 
-The project entrypoint is [m_d_c.py](/m_d_c.py).
+The project entrypoint is [page_checker.py](/page_checker.py).
