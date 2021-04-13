@@ -8,14 +8,15 @@ REPORT_RESULTS_HEADER = ['fqdn', 'message']
 
 _report_results = []
 
-def add_result(fqdn, message):
+def add_report_result(fqdn, message):
     """
     Add a report record.
     """
-    _report_results.append({
-        'fqdn': fqdn,
-        'message': message
-    })
+    if fqdn and message:
+        _report_results.append({
+            'fqdn': fqdn,
+            'message': message
+        })
 
 
 def write_report():

@@ -27,14 +27,14 @@ def main():
         for page in config.PAGE_CHECKS:
             url = page['url']
             fqdn = tldextract.extract(url).fqdn
-            process_url(browser, page, fqdn)
+            process_url(browser, page)
 
             proc_cnt += 1
 
             # Print progress information - to be improved.
             sys.stdout.write('\033[2K\033[1G')
             sys.stdout.flush()
-            print('({}/{})| {}'.format(proc_cnt, total_cnt, url.partition(fqdn )[2]), end='')
+            print('({}/{}) > {}'.format(proc_cnt, total_cnt, url.partition(fqdn )[2]), end='')
             sys.stdout.flush()
 
         write_report()
