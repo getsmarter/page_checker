@@ -1,19 +1,16 @@
 """
-Define page checks.
-
-NOTE:
- - All function sugnatures should be: browser, fqdn, page.
- - Functions implemented here should be added to config_local.py: PAGE_CHECKS['checks'].
+Check page for the presence of specified classes.
 """
 
-from .report_results import add_result
+from etc import config
+from .report_results import add_report_result
 
 
-def _prep_row_text(text, page):
+def _prep_row_text(text, strip_text):
     """
     Remove predefined words and format for reporting.
     """
-    for i in page['strip_text']:
+    for i in strip_text:
         text = text.replace(i, '')
 
     text = " - ".join(text.split('\n'))
@@ -22,25 +19,28 @@ def _prep_row_text(text, page):
     return text
 
 
-def chk_status_missing(browser, fqdn, page):
+def _process_checks(browser, check_classes, strip_text):
     """
-    Check for "Missing from disk!" errors.
+    Process rules for the page.
     """
-    items = browser.find_elements_by_class_name('status-missing')
-    for itm in items:
-        text = _prep_row_text(itm.text, page)
-        add_result(fqdn, text)
+    for class_item in check_classes:
+        class_item_results = browser.find_elements_by_class_name(class_item)
+        for itm in class_item_results:
+            add_report_result(browser.current_url, _prep_row_text(itm.text, strip_text))
 
 
-def chk_generic_errors(browser, fqdn, page):
+def chk_page(browser, page):
     """
-    Check for generic errors.
+    Check the page for elements to indicate potential issues.
     """
-    if browser.current_url != page['final_url']:
-        add_result(fqdn, 'Current page ({}), is not the expected page ({})'. \
-            format(browser.current_url, page['final_url']))
+    # Confirm that we are on the intended page.
+    expected_url = page.get('expected_url', page['url'])
+    if browser.current_url != expected_url:
+        add_report_result(browser.current_url, '{}, expected: {}'.format(browser.current_url, expected_url))
 
-    items = browser.find_elements_by_class_name('alert')
-    for itm in items:
-        text = _prep_row_text(itm.text, page)
-        add_result(fqdn, text)
+    # Iterate through all checks.
+    page_check_items = page.get('page_check_items', config.PAGE_CHECK_ITEMS)
+    for check_item in page_check_items:
+        check_classes = check_item.get('class', [])
+        strip_text = check_item.get('strip_text', [])
+        _process_checks(browser, check_classes, strip_text)

@@ -69,7 +69,7 @@ pip install -r requirements-dev.txt
     cp etc/config_local_template.py etc/config_local.py
     ```
 
-- Set parameters in the new file.
+- Set parameters in the new, unversioned, file.
 
 ## Usage
 

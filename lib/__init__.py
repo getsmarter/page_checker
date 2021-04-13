@@ -10,7 +10,7 @@ from selenium.common.exceptions import TimeoutException
 from selenium.webdriver.firefox.options import Options as FirefoxOptions
 
 from etc import config
-from .report_results import add_result
+from .report_results import add_report_result
 from .page_checks import *
 
 logging.basicConfig(format='%(levelname)s:%(message)s', level=logging.WARN)
@@ -53,21 +53,28 @@ def load(browser, url):
     return loaded_ok
 
 
-def process_url(browser, page, fqdn):
+def process_url(browser, page):
     """
     Process a single page.
     """
+    # Clear authentication cookies.
     browser.delete_all_cookies()
 
     loaded_ok = load(browser, page['url'])
     if not loaded_ok:
-        add_result(fqdn, 'Selenium could not load page.')
+        add_report_result(page['url'], 'Could not load page.')
         return
 
-    if page['url_login_path'] in browser.current_url:
-        browser.find_element_by_id('username').send_keys(page['username'])
-        browser.find_element_by_id('password').send_keys(page['password'])
-        browser.find_element_by_id('loginbtn').click()
+    # Login, if needed.
+    login_page_url = page.get('login_page_url', config.PC_LOGIN_PAGE_URL)
+    login_field_username = page.get('login_field_username', config.LOGIN_FIELD_USERNAME)
+    login_field_password = page.get('login_field_password', config.LOGIN_FIELD_PASSWORD)
+    login_button = page.get('login_button', config.LOGIN_BUTTON)
 
-    for check in page['checks']:
-        globals()[check](browser, fqdn, page)
+    if login_page_url and login_page_url in browser.current_url:
+        browser.find_element_by_id(login_field_username).send_keys(page.get('username', config.PC_USERNAME))
+        browser.find_element_by_id(login_field_password).send_keys(page.get('password', config.PC_PASSWORD))
+        browser.find_element_by_id(login_button).click()
+
+    # Run checks.
+    chk_page(browser, page)
