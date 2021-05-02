@@ -29,15 +29,19 @@ def main():
             fqdn = tldextract.extract(url).fqdn
             process_url(browser, page)
 
+            print("Running checks for the following url:", fqdn)
+
             proc_cnt += 1
 
             # Print progress information - to be improved.
             sys.stdout.write('\033[2K\033[1G')
             sys.stdout.flush()
-            print('({}/{}) > {}'.format(proc_cnt, total_cnt, url.partition(fqdn )[2]), end='')
+            print('({}/{}) > {}'.format(proc_cnt, total_cnt, url.partition(fqdn )[2]))
             sys.stdout.flush()
 
         write_report()
+
+        print("All checks are done. Please review /var for results")
 
     except Exception as ex:
         logging.error('Exception: %s', ex)
