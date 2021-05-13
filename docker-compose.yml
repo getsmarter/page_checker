@@ -1,0 +1,6 @@
+app:
+  container_name: page_checker
+  restart: on-failure
+  build: .
+  volumes:
+    - ./:/app
