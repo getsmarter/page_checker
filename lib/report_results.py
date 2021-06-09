@@ -4,28 +4,51 @@ Manage reporting.
 import csv
 import datetime
 
-REPORT_RESULTS_HEADER = ['fqdn', 'message']
+PLUGIN_RESULTS_HEADER = ['FQDN', 'Plugin Name', 'Plugin Detail', 'Version', 'Message']
+GENERAL_MESSAGE_HEADER = ['FQDN', 'Message']
 
-_report_results = []
+_plugin_report_results = []
+_general_report_results = []
 
-def add_report_result(fqdn, message):
+def add_plugin_report_result(plugin_name, plugin_detail, version, message, fqdn):
     """
-    Add a report record.
+    Add a plugin report record.
     """
-    if fqdn and message:
-        _report_results.append({
-            'fqdn': fqdn,
-            'message': message
-        })
+    _plugin_report_results.append({
+        'Plugin Name': plugin_name,
+        'Plugin Detail': plugin_detail,
+        'Version': version,
+        'Message': message,
+        'FQDN': fqdn,
+    })
 
 
-def write_report():
+def add_general_report_result(fqdn, message):
     """
-    Serialise report.
+    Add a general report record.
     """
-    file_name = 'var/{}_{}.csv'.format('errors_', datetime.datetime.now().strftime('%Y-%m-%d_%H-%M'))
+    _general_report_results.append({
+        'FQDN': fqdn,
+        'Message': message
+    })
 
-    with open(file_name, 'w') as f_out:
-        writer = csv.DictWriter(f_out, fieldnames=REPORT_RESULTS_HEADER)
-        writer.writeheader()
-        writer.writerows(_report_results)
+
+def write_reports():
+    """
+    Serialise reports.
+    """
+    timestamp = datetime.datetime.now().strftime('%Y-%m-%d_%H-%M')
+
+    if _plugin_report_results:
+        file_name = 'var/plugin_results_{}.csv'.format(timestamp)
+        with open(file_name, 'w') as f_out:
+            writer = csv.DictWriter(f_out, fieldnames=PLUGIN_RESULTS_HEADER)
+            writer.writeheader()
+            writer.writerows(_plugin_report_results)
+
+    if _general_report_results:
+        file_name = 'var/general_messages_{}.csv'.format(timestamp)
+        with open(file_name, 'w') as f_out:
+            writer = csv.DictWriter(f_out, fieldnames=GENERAL_MESSAGE_HEADER)
+            writer.writeheader()
+            writer.writerows(_general_report_results)
