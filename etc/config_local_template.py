@@ -9,10 +9,14 @@ LOGIN_FIELD_USERNAME = 'username'
 LOGIN_FIELD_PASSWORD = 'password'
 LOGIN_BUTTON = 'loginbtn'
 
-# Defaults for PAGE_CHECKS attribute values.
+## Defaults for PAGE_CHECKS attribute values.
+# The default login page.
 PC_LOGIN_PAGE_URL = '/login/index.php'
+# Default username & password.
 PC_USERNAME = None
 PC_PASSWORD = None
+
+DELETE_COOKIES = True
 
 # Default checks, can be overridden per URL.
 PAGE_CHECK_ITEMS = [
@@ -69,6 +73,11 @@ PAGE_CHECK_ITEMS = [
         - Check page using specific rule set, use structure of PAGE_CHECK_ITEMS.
         - Optional.
         - PAGE_CHECK_ITEMS: Default value.
+
+    delete_ccokies: boolean
+        - Determine if cookies for this check should be cleared.
+        - Optional.
+        - delete_cookies: Default value.
 """
 PAGE_CHECKS = [
     {

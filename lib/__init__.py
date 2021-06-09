@@ -10,7 +10,7 @@ from selenium.common.exceptions import TimeoutException
 from selenium.webdriver.firefox.options import Options as FirefoxOptions
 
 from etc import config
-from .report_results import add_report_result
+from .report_results import add_general_report_result
 from .page_checks import *
 
 logging.basicConfig(format='%(levelname)s:%(message)s', level=logging.WARN)
@@ -58,11 +58,13 @@ def process_url(browser, page):
     Process a single page.
     """
     # Clear authentication cookies.
-    browser.delete_all_cookies()
+    delete_cookies = page.get('delete_cookies', config.DELETE_COOKIES)
+    if delete_cookies:
+        browser.delete_all_cookies()
 
     loaded_ok = load(browser, page['url'])
     if not loaded_ok:
-        add_report_result(page['url'], 'Could not load page.')
+        add_general_report_result(page['url'], 'Could not load page.')
         return
 
     # Login, if needed.
@@ -76,5 +78,4 @@ def process_url(browser, page):
         browser.find_element_by_id(login_field_password).send_keys(page.get('password', config.PC_PASSWORD))
         browser.find_element_by_id(login_button).click()
 
-    # Run checks.
     chk_page(browser, page)
