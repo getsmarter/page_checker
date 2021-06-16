@@ -2,6 +2,11 @@
 Configuration file template.
 
 Copy file and name it 'config_local.py'. This file is unversioned.
+
+NOTE: Default values already defined in 'config.py'. In most cases you will
+only need to have the following in config_local.py:
+ - PC_USERNAME = None
+ - PC_PASSWORD = None
 """
 
 # Default login page field names.
