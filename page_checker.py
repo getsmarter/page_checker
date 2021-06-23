@@ -51,6 +51,9 @@ def main():
             minutes, seconds), flush=True)
         print("All checks are done. Please review /var for results", flush=True)
 
+    except KeyboardInterrupt:
+        pass
+
     except Exception as ex:
         logging.error('Exception: %s', ex)
         traceback.print_exc()
