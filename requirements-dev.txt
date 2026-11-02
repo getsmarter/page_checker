@@ -2,4 +2,4 @@
 -r requirements.txt
 
 # https://pypi.org/project/pylint/
-pylint==2.6.0
+pylint==4.0.9
